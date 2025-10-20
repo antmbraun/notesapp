@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+.Python
+
+# Environments
+.env
+.env.*
+venv/
+.venv/
+.venv_test/
+
+# Tooling / IDE
+.vscode/
+.idea/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Coverage / build
+.coverage*
+coverage.xml
+htmlcov/
+dist/
+build/
+
+# macOS
+.DS_Store
+
