@@ -35,15 +35,13 @@ def test_get_notes_after_create():
     response = client.get("/notes")
     assert response.status_code == 200
     data = response.json()
-    assert "notes" in data
+    assert "Note" in data[0]["title"]
 
 
 def test_summarize_success():
     # Fake completion object with the nested shape your code reads
     # These are safeguards to ensure the LLM is called correctly, especially
     # that there are not too many calls to the LLM.
-    if os.getenv("HF_TOKEN") is None:
-        raise ValueError("HF_TOKEN is not set")
 
     completion = SimpleNamespace(
         choices=[SimpleNamespace(message=SimpleNamespace(content="Mock summary"))]
@@ -77,6 +75,10 @@ def test_summarize_error():
 # This test will actually call the LLM. It is not a mock test, and will fail
 # if the Hugging Face API is not available.
 def test_summarize_live_user_string():
+
+    if os.getenv("HF_TOKEN") is None:
+        raise ValueError("HF_TOKEN is not set")
+
     # Prefer external file; fallback to the dummy string
     text = "TEST STRING"
     try:
@@ -97,3 +99,63 @@ def test_summarize_live_user_string():
 
     # For developer human checking - need to call pytest with -s to see the output
     print(data["summary"])
+
+
+def test_get_notes_by_description():
+    
+    fake_client = MagicMock()
+    
+    # Return different embeddings based on input text
+    def mock_post(*args, **kwargs):
+        # Handle both json={"inputs": text} and json_data={"inputs": text}
+        json_data = kwargs.get("json", {})
+        text = json_data.get("inputs", "")
+        # Create a simple hash-based embedding to differentiate texts
+        import hashlib
+        hash_val = int(hashlib.md5(text.encode()).hexdigest()[:8], 16) % 1000
+        # Return embedding with values based on text hash
+        embedding = [hash_val / 1000.0] * 384
+        return [embedding]
+    
+    fake_client.post.side_effect = mock_post
+    
+    # feature_extraction takes text directly as positional arg
+    def mock_feature_extraction(text):
+        import hashlib
+        hash_val = int(hashlib.md5(text.encode()).hexdigest()[:8], 16) % 1000
+        embedding = [hash_val / 1000.0] * 384
+        return [embedding]
+    
+    fake_client.feature_extraction.side_effect = mock_feature_extraction
+
+    with patch("semantic_search.InferenceClient", return_value=fake_client):
+        client.post("/notes", json={"title": "This is simply to test the semantic search", "content": "Semantic search is a technique to find notes that are similar to a given description."})
+        client.post("/notes", json={"title": "This is a random title", "content": "This is just some random text about nothing in particular."})
+        response = client.get("/notes", params={"description": "Semantic search", "top_k": 1})
+        assert response.status_code == 200
+        data = response.json()
+        assert len(data) == 1
+        assert data[0]["title"] == "This is simply to test the semantic search"
+
+
+def test_live_get_notes_by_description():
+    if os.getenv("HF_TOKEN") is None:
+        raise ValueError("HF_TOKEN is not set")
+
+    try:
+        with open("test_strings_multiple.txt", "r", encoding="utf-8") as f:
+            contents = f.read().strip()
+            if contents:
+                for line in contents.split("\n"):
+                    client.post("/notes", json={"title": "", "content": line})
+    except FileNotFoundError:
+        pass
+
+    response = client.get("/notes", params={"description": "Semantic search", "top_k": 1})
+    if response.status_code != 200:
+        print(f"Status: {response.status_code}")
+        print(f"Response: {response.json()}")
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data) == 1
+    assert data[0]["content"].find("Semantic search") != -1

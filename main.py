@@ -8,6 +8,8 @@ from pydantic import BaseModel
 import uvicorn
 from huggingface_hub import InferenceClient
 from dotenv import load_dotenv
+from cache import cache_summary, get_cached_summary
+from semantic_search import get_notes_by_description
 
 load_dotenv()
 
@@ -56,8 +58,17 @@ async def read_root():
 
 
 @app.get("/notes")
-async def get_notes():
-    return {"notes": notes}
+async def get_notes(description: str | None = None, top_k: int | None = 5):
+    """
+     Returns a list of notes.
+     If description is provided, returns notes sorted by similarity to the description using semantic similarity with a Hugging Face embedding model.
+     If description is not provided, returns all notes.
+     top_k limits the number of notes returned.
+     """
+    if description:
+        return get_notes_by_description(notes, description, top_k)
+    else:
+        return notes[:top_k]
 
 
 @app.post("/notes")
@@ -73,7 +84,15 @@ async def health_check():
 
 @app.post("/summarize")
 def summarize(req: SummaryRequest):
+
+    # Check for cached summary
+    cached_summary = get_cached_summary(req.text)
+    if cached_summary is not None:
+        return {"summary": cached_summary}
+    
     token = os.getenv("HF_TOKEN")
+    if token is None:
+        raise ValueError("HF_TOKEN is not set")
 
     client = (
         InferenceClient(endpoint=req.endpoint_url, token=token)
@@ -107,11 +126,10 @@ def summarize(req: SummaryRequest):
     except Exception as e:
         raise HTTPException(status_code=502, detail=str(e))
 
-    return {
-        "summary": summary,
-        "model": req.model,
-        "endpoint": req.endpoint_url or "hub",
-    }
+    # Cache the summary
+    cache_summary(req.text, summary)
+
+    return {"summary": summary}
 
 
 if __name__ == "__main__":
