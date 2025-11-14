@@ -27,17 +27,6 @@ class Note(BaseModel):
 
 # class NoteCreate(NoteBase):
 #     pass
-
-
-class SummaryRequest(BaseModel):
-    text: str
-    model: str = "deepseek-ai/DeepSeek-V3-0324"
-    min_length: int | None = 30
-    max_length: int | None = 130
-    do_sample: bool = False
-    endpoint_url: str | None = None
-
-
 notes = []
 
 
@@ -83,10 +72,10 @@ async def health_check():
 
 
 @app.post("/summarize")
-def summarize(req: SummaryRequest):
+def summarize(req: dict):
 
     # Check for cached summary
-    cached_summary = get_cached_summary(req.text)
+    cached_summary = get_cached_summary(req["text"])
     if cached_summary is not None:
         return {"summary": cached_summary}
     
@@ -94,30 +83,16 @@ def summarize(req: SummaryRequest):
     if token is None:
         raise ValueError("HF_TOKEN is not set")
 
-    client = (
-        InferenceClient(endpoint=req.endpoint_url, token=token)
-        if req.endpoint_url
-        else InferenceClient(model=req.model, token=token)
-    )
+    client = InferenceClient(model="deepseek-ai/DeepSeek-V3-0324", token=token)
 
     # TODO: Double-check that chat.completions.create uses these parameters
-    params = {
-        k: v
-        for k, v in {
-            "min_length": req.min_length,
-            "max_length": req.max_length,
-            "do_sample": req.do_sample,
-        }.items()
-        if v is not None
-    }
-
     try:
         completion = client.chat.completions.create(
             model="deepseek-ai/DeepSeek-V3-0324",
             messages=[
                 {
                     "role": "user",
-                    "content": f"{req.text}\n\nPlease summarize the above text in 50 words or less.",
+                    "content": f"{req['text']}\n\nPlease summarize the above text in 50 words or less.",
                 }
             ],
         )
@@ -127,7 +102,7 @@ def summarize(req: SummaryRequest):
         raise HTTPException(status_code=502, detail=str(e))
 
     # Cache the summary
-    cache_summary(req.text, summary)
+    cache_summary(req["text"], summary)
 
     return {"summary": summary}
 

@@ -132,6 +132,7 @@ def test_get_notes_by_description():
         client.post("/notes", json={"title": "This is simply to test the semantic search", "content": "Semantic search is a technique to find notes that are similar to a given description."})
         client.post("/notes", json={"title": "This is a random title", "content": "This is just some random text about nothing in particular."})
         response = client.get("/notes", params={"description": "Semantic search", "top_k": 1})
+
         assert response.status_code == 200
         data = response.json()
         assert len(data) == 1

@@ -18,6 +18,7 @@ def get_notes_by_description(notes: list[dict], description: str, top_k: int | N
     """
     try:
         # Get embedding for the search description
+        print(len(notes))
         description_embedding = get_embedding(description)
         
         # Get embeddings for all notes and compute similarity
@@ -27,6 +28,9 @@ def get_notes_by_description(notes: list[dict], description: str, top_k: int | N
             note_text = f"{note.get('title', '')} {note.get('content', '')}"
             note_embedding = get_embedding(note_text)
             
+
+            print(f"len(note_embedding): {len(note_embedding)}")
+            print(f"len(description_embedding): {len(description_embedding)}")
             # Compute cosine similarity
             similarity = cosine_similarity(
                 [description_embedding],
@@ -34,7 +38,7 @@ def get_notes_by_description(notes: list[dict], description: str, top_k: int | N
             )[0][0]
 
             # Debug: print similarity
-            # print(f"Similarity: {similarity}")
+            print(f"Similarity: {similarity}")
             
             note_scores.append((note, similarity))
         
@@ -43,16 +47,13 @@ def get_notes_by_description(notes: list[dict], description: str, top_k: int | N
         return [note for note, _ in note_scores[:top_k]]
         
     except Exception as e:
+        print(str(e))
         raise HTTPException(status_code=502, detail=f"Search failed: {str(e)}")
-    
-
 
 def get_embedding(text: str) -> list[float]:
     """
     Get embedding vector for text using Hugging Face Inference API.
     """
-    import numpy as np
-
     token = os.getenv("HF_TOKEN")
     if token is None:
         raise HTTPException(status_code=500, detail="HF_TOKEN is not set")
@@ -61,6 +62,10 @@ def get_embedding(text: str) -> list[float]:
 
     try:
         response = client.feature_extraction(text)
+        # feature_extraction returns a list of embeddings (one per input)
+        # For a single input, extract the first embedding
+        if isinstance(response, list) and len(response) > 0 and isinstance(response[0], list):
+            return response[0]
         return response
     
     except Exception as e:
