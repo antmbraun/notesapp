@@ -129,7 +129,7 @@ def test_get_notes_by_description():
     fake_client.feature_extraction.side_effect = mock_feature_extraction
 
     with patch("semantic_search.InferenceClient", return_value=fake_client):
-        client.post("/notes", json={"title": "This is simply to test the semantic search", "content": "Semantic search is a technique to find notes that are similar to a given description."})
+        client.post("/notes", json={"title": "This is dummy text to make sure the semantic search code doesn't crash.", "content": "This is a bunch of dummy text."})
         client.post("/notes", json={"title": "This is a random title", "content": "This is just some random text about nothing in particular."})
         response = client.get("/notes", params={"description": "Semantic search", "top_k": 1})
 
