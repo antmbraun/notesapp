@@ -29,8 +29,8 @@ def get_notes_by_description(notes: list[dict], description: str, top_k: int | N
             note_embedding = get_embedding(note_text)
             
 
-            print(f"len(note_embedding): {len(note_embedding)}")
-            print(f"len(description_embedding): {len(description_embedding)}")
+            # print(f"len(note_embedding): {len(note_embedding)}")
+            # print(f"len(description_embedding): {len(description_embedding)}")
             # Compute cosine similarity
             similarity = cosine_similarity(
                 [description_embedding],
@@ -38,7 +38,7 @@ def get_notes_by_description(notes: list[dict], description: str, top_k: int | N
             )[0][0]
 
             # Debug: print similarity
-            print(f"Similarity: {similarity}")
+            # print(f"Similarity: {similarity}")
             
             note_scores.append((note, similarity))
         

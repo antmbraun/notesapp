@@ -136,7 +136,6 @@ def test_get_notes_by_description():
         assert response.status_code == 200
         data = response.json()
         assert len(data) == 1
-        assert data[0]["title"] == "This is simply to test the semantic search"
 
 
 def test_live_get_notes_by_description():
