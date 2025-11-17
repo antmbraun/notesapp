@@ -52,7 +52,7 @@ def test_summarize_success():
 
     with patch("main.InferenceClient", return_value=fake_client) as mock_cls:
         resp = client.post(
-            "/summarize", json={"text": "This is a long text to summarize."}
+            "/summarize", json={"content": "This is a long text to summarize."}
         )
         assert resp.status_code == 200
         body = resp.json()
@@ -67,7 +67,7 @@ def test_summarize_error():
     fake_client.chat.completions.create.side_effect = Exception("Boom")
 
     with patch("main.InferenceClient", return_value=fake_client):
-        resp = client.post("/summarize", json={"text": "Trigger error"})
+        resp = client.post("/summarize", json={"content": "Trigger error"})
         assert resp.status_code == 502
         assert "Boom" in resp.json()["detail"]
 
@@ -89,7 +89,7 @@ def test_summarize_live_user_string():
     except FileNotFoundError:
         pass
 
-    payload = {"text": text}
+    payload = {"content": text}
 
     resp = client.post("/summarize", json=payload)
     assert resp.status_code == 200, resp.text

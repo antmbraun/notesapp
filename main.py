@@ -18,17 +18,17 @@ app = FastAPI(title="Notes App", description="A simple notes application with Fa
 
 # Pydantic models
 class Note(BaseModel):
-    id: int
-    title: str
+    title: str | None = None
     content: str
-    created_at: datetime
-    updated_at: datetime
+    created_at: datetime = datetime.now()
+    updated_at: datetime = datetime.now()
 
 
 # class NoteCreate(NoteBase):
 #     pass
-notes = []
 
+# Serially indexed list of notes, each one a dict with title, content
+notes = []
 
 @app.get("/", response_class=HTMLResponse)
 async def read_root():
@@ -55,14 +55,33 @@ async def get_notes(description: str | None = None, top_k: int | None = 5):
      top_k limits the number of notes returned.
      """
     if description:
-        return get_notes_by_description(notes, description, top_k)
+        result = get_notes_by_description(notes, description, top_k)
     else:
-        return notes[:top_k]
+        result = notes[:top_k]
+
+    """
+    Cast Note objects to dicts because we need to add a summary field.
+    Include summaries for each note in the list.
+    """
+    result2 = []
+    for note in result:
+        temp = note.model_dump()
+        temp["summary"] = summarize(note)
+        result2.append(temp)
+    
+    return result2
 
 
 @app.post("/notes")
-async def create_note(note: dict):
+async def create_note(note: Note):
     notes.append(note)
+
+    # Summarize the note
+    try:
+        summarize(note)
+    except Exception as e:  # TODO: Handle error
+        print(f"Error summarizing note: {e}")
+
     return {"message": "Note created", "note": note}
 
 
@@ -72,10 +91,10 @@ async def health_check():
 
 
 @app.post("/summarize")
-def summarize(req: dict):
+def summarize(req: Note):
 
     # Check for cached summary
-    cached_summary = get_cached_summary(req["text"])
+    cached_summary = get_cached_summary(req.content)
     if cached_summary is not None:
         return {"summary": cached_summary}
     
@@ -92,7 +111,7 @@ def summarize(req: dict):
             messages=[
                 {
                     "role": "user",
-                    "content": f"{req['text']}\n\nPlease summarize the above text in 50 words or less.",
+                    "content": f"{req.content}\n\nPlease summarize the above text in 50 words or less.",
                 }
             ],
         )
@@ -102,9 +121,10 @@ def summarize(req: dict):
         raise HTTPException(status_code=502, detail=str(e))
 
     # Cache the summary
-    cache_summary(req["text"], summary)
+    cache_summary(req.content, summary)
 
     return {"summary": summary}
+
 
 
 if __name__ == "__main__":

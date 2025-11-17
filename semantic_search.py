@@ -25,7 +25,7 @@ def get_notes_by_description(notes: list[dict], description: str, top_k: int | N
         note_scores = []
         for note in notes:
             # Combine title and content for better matching
-            note_text = f"{note.get('title', '')} {note.get('content', '')}"
+            note_text = f"{note.title or ''} {note.content or ''}"
             note_embedding = get_embedding(note_text)
             
 
