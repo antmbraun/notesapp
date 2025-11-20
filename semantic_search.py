@@ -4,7 +4,7 @@ from huggingface_hub import InferenceClient
 from sklearn.metrics.pairwise import cosine_similarity
 
 
-def get_notes_by_description(notes: list[dict], description: str, top_k: int | None = None):
+def get_notes_by_description(notes: list, description: str):
     """
     Search notes using semantic similarity with a Hugging Face embedding model.
     
@@ -42,9 +42,10 @@ def get_notes_by_description(notes: list[dict], description: str, top_k: int | N
             
             note_scores.append((note, similarity))
         
-        # Sort by similarity (highest first) and return top_k
+        # Sort by similarity (highest first) 
         note_scores.sort(key=lambda x: x[1], reverse=True)
-        return [note for note, _ in note_scores[:top_k]]
+        # Return all notes but discard similarity scores since we no longer need them
+        return [note for note, _ in note_scores]
         
     except Exception as e:
         print(str(e))

@@ -55,9 +55,11 @@ async def get_notes(description: str | None = None, top_k: int | None = 5):
      top_k limits the number of notes returned.
      """
     if description:
-        result = get_notes_by_description(notes, description, top_k)
+        result = get_notes_by_description(notes, description)
     else:
-        result = notes[:top_k]
+        result = notes
+
+    result = result[:top_k]
 
     """
     Cast Note objects to dicts because we need to add a summary field.
@@ -66,7 +68,7 @@ async def get_notes(description: str | None = None, top_k: int | None = 5):
     result2 = []
     for note in result:
         temp = note.model_dump()
-        temp["summary"] = summarize(note)
+        temp["summary"] = summarize(note).get("summary")
         result2.append(temp)
     
     return result2
