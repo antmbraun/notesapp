@@ -4,12 +4,12 @@ from datetime import datetime
 from fastapi import FastAPI
 from fastapi.exceptions import HTTPException
 from fastapi.responses import HTMLResponse
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 import uvicorn
 from huggingface_hub import InferenceClient
 from dotenv import load_dotenv
-from cache import cache_summary, get_cached_summary
 from semantic_search import get_notes_by_description
+from datetime import datetime
 
 load_dotenv()
 
@@ -20,8 +20,9 @@ app = FastAPI(title="Notes App", description="A simple notes application with Fa
 class Note(BaseModel):
     title: str | None = None
     content: str
-    created_at: datetime = datetime.now()
-    updated_at: datetime = datetime.now()
+    summary: str | None = None
+    created_at: datetime = Field(default_factory=datetime.utcnow)  # pyright: ignore[reportDeprecated]
+    updated_at: datetime = Field(default_factory=datetime.utcnow)  # pyright: ignore[reportDeprecated]
 
 
 # class NoteCreate(NoteBase):
@@ -29,6 +30,15 @@ class Note(BaseModel):
 
 # Serially indexed list of notes, each one a dict with title, content
 notes = []
+
+
+def _try_summarize_notes(notes: list[Note]) -> None:
+    """
+    Call the summarize method on every note in the list of notes (method has side effect of
+    saving the summary to the note if it doesn't already exist).
+    """
+    _ = (summarize(note) for note in notes)
+
 
 @app.get("/", response_class=HTMLResponse)
 async def read_root():
@@ -49,11 +59,11 @@ async def read_root():
 @app.get("/notes")
 async def get_notes(description: str | None = None, top_k: int | None = 5):
     """
-     Returns a list of notes.
-     If description is provided, returns notes sorted by similarity to the description using semantic similarity with a Hugging Face embedding model.
-     If description is not provided, returns all notes.
-     top_k limits the number of notes returned.
-     """
+    Returns a list of notes.
+    If description is provided, returns notes sorted by similarity to the description using semantic similarity with a Hugging Face embedding model.
+    If description is not provided, returns all notes.
+    top_k limits the number of notes returned.
+    """
     if description:
         result = get_notes_by_description(notes, description)
     else:
@@ -61,17 +71,8 @@ async def get_notes(description: str | None = None, top_k: int | None = 5):
 
     result = result[:top_k]
 
-    """
-    Cast Note objects to dicts because we need to add a summary field.
-    Include summaries for each note in the list.
-    """
-    result2 = []
-    for note in result:
-        temp = note.model_dump()
-        temp["summary"] = summarize(note).get("summary")
-        result2.append(temp)
-    
-    return result2
+    _try_summarize_notes(result)
+    return result
 
 
 @app.post("/notes")
@@ -95,11 +96,10 @@ async def health_check():
 @app.post("/summarize")
 def summarize(req: Note):
 
-    # Check for cached summary
-    cached_summary = get_cached_summary(req.content)
-    if cached_summary is not None:
-        return {"summary": cached_summary}
-    
+    # Check if summary already was successfully generated
+    if req.summary:
+        return {"summary": req.summary}
+
     token = os.getenv("HF_TOKEN")
     if token is None:
         raise ValueError("HF_TOKEN is not set")
@@ -122,11 +122,10 @@ def summarize(req: Note):
     except Exception as e:
         raise HTTPException(status_code=502, detail=str(e))
 
-    # Cache the summary
-    cache_summary(req.content, summary)
+    # Save the summary to the note
+    req.summary = summary
 
     return {"summary": summary}
-
 
 
 if __name__ == "__main__":
