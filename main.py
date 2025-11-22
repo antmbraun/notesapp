@@ -8,7 +8,7 @@ from pydantic import BaseModel, Field
 import uvicorn
 from huggingface_hub import InferenceClient
 from dotenv import load_dotenv
-from semantic_search import get_notes_by_description
+from semantic_search import get_embedding, get_notes_by_description
 from datetime import datetime
 
 load_dotenv()
@@ -21,6 +21,7 @@ class Note(BaseModel):
     title: str | None = None
     content: str
     summary: str | None = None
+    description_embedding: list[float] | None = None
     created_at: datetime = Field(default_factory=datetime.utcnow)  # pyright: ignore[reportDeprecated]
     updated_at: datetime = Field(default_factory=datetime.utcnow)  # pyright: ignore[reportDeprecated]
 
@@ -77,13 +78,21 @@ async def get_notes(description: str | None = None, top_k: int | None = 5):
 
 @app.post("/notes")
 async def create_note(note: Note):
-    notes.append(note)
 
     # Summarize the note
     try:
         summarize(note)
     except Exception as e:  # TODO: Handle error
         print(f"Error summarizing note: {e}")
+
+    # Get the description embedding of the note
+    try:
+        note.description_embedding = get_embedding(note.content)
+    except Exception as e:
+        print(f"Error getting embedding: {e}")
+        note.description_embedding = None
+
+    notes.append(note)
 
     return {"message": "Note created", "note": note}
 

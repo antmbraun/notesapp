@@ -1,4 +1,3 @@
-- why not just add summary field to note class?
 - Find diverse notes datasets to summarize
 - Implement automated classification of notes by topic (clustering or prompt based approaches)
 - Add endpoint to list and return notes by topic
