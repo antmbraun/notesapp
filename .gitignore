@@ -27,6 +27,14 @@ htmlcov/
 dist/
 build/
 
+# Frontend dependencies
+frontend/node_modules/
+
+# Frontend build
+frontend/dist/
+
+
+
 # macOS
 .DS_Store
 
