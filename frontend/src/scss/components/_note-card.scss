@@ -1,0 +1,32 @@
+@use '../utils/variables' as *;
+@use '../utils/mixins' as *;
+
+.note-card {
+  @include card;
+
+  h2 {
+    margin-top: 0;
+    color: $text-primary;
+  }
+
+  p {
+    color: $text-secondary;
+    line-height: $line-height-base;
+  }
+
+  small {
+    display: block;
+    margin-top: $spacing-sm;
+    color: $text-muted;
+    font-size: $font-size-sm;
+  }
+}
+
+.summary {
+  margin-top: $spacing-md;
+  padding: $spacing-sm;
+  background: $bg-secondary;
+  border-radius: $border-radius-sm;
+  font-size: 0.9em;
+}
+

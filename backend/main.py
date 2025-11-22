@@ -1,19 +1,26 @@
 import os
 from datetime import datetime
 
-from fastapi import FastAPI
-from fastapi.exceptions import HTTPException
+from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel, Field
 import uvicorn
 from huggingface_hub import InferenceClient
 from dotenv import load_dotenv
 from semantic_search import get_embedding, get_notes_by_description
-from datetime import datetime
+from fastapi.middleware.cors import CORSMiddleware
 
 load_dotenv()
 
 app = FastAPI(title="Notes App", description="A simple notes application with FastAPI")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 # Pydantic models
