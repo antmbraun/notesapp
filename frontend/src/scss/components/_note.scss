@@ -1,0 +1,25 @@
+@use '../utils/variables' as *;
+
+.note-detail {
+    color: white;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.note-title {
+    font-size: $font-size-xl;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.note-summary {
+    font-size: $font-size-lg;
+    line-height: $line-height-base;
+    font-style: italic;
+}
+
+.note-content {
+    font-size: $font-size-lg;
+    line-height: $line-height-base;
+}
