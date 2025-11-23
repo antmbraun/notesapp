@@ -3,6 +3,9 @@
 
 .note-card {
   @include card;
+  text-decoration: none;
+  color: $text-primary;
+
 
   h2 {
     margin-top: 0;
@@ -21,12 +24,3 @@
     font-size: $font-size-sm;
   }
 }
-
-.summary {
-  margin-top: $spacing-md;
-  padding: $spacing-sm;
-  background: $bg-secondary;
-  border-radius: $border-radius-sm;
-  font-size: 0.9em;
-}
-

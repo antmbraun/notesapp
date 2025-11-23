@@ -1,5 +1,16 @@
 // Mixins for common patterns
+
+@use 'sass:color';
+
 @use 'variables' as *;
+
+
+@mixin container {
+  max-width: $content-max-width;
+  margin: 0 auto;
+  padding: $spacing-lg;
+}
+
 
 @mixin card {
   border: 1px solid $border-color;
@@ -20,11 +31,30 @@
   transition: background-color 0.2s;
 
   &:hover {
-    background-color: darken($primary-color, 10%);
+    background-color: color.adjust($primary-color, $lightness: -10%);
   }
 
   &:active {
-    background-color: darken($primary-color, 15%);
+    background-color: color.adjust($primary-color, $lightness: -15%);
+  }
+}
+
+@mixin button-secondary {
+  background-color: $secondary-color;
+  color: white;
+  border: none;
+  padding: $spacing-sm $spacing-md;
+  border-radius: $border-radius-sm;
+  cursor: pointer;
+  font-size: $font-size-base;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: color.adjust($secondary-color, $lightness: -10%);
+  }
+
+  &:active {
+    background-color: color.adjust($secondary-color, $lightness: -15%);
   }
 }
 
@@ -34,13 +64,6 @@
   cursor: pointer;
 
   &:hover {
-    color: darken($primary-color, 10%);
+    color: color.adjust($primary-color, $lightness: -10%);
   }
 }
-
-@mixin container {
-  max-width: $max-width;
-  margin: 0 auto;
-  padding: $spacing-lg;
-}
-

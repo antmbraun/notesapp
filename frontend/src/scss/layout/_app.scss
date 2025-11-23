@@ -1,20 +1,76 @@
+@use 'sass:color';
+
 @use '../utils/variables' as *;
 @use '../utils/mixins' as *;
 
-.app {
-  @include container;
+html, body {
+  background-color: black;
+  height: 100%;
 }
 
-.notes-container {
+
+.header {
+  max-width: $header-max-width;
+  margin: 0 auto;
+  padding: $spacing-lg;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  background: black;
+  min-height: 100px;
+}
+
+.add-icon {
+  width: 32px;
+  height: 32px;
+  background: white;
+  padding: 10px;
+  box-sizing: content-box;
+  border-radius: 100%;
+
+  &:hover {
+    background: color.adjust($primary-color, $lightness: 10%);
+  }
+  &:active {
+    background: color.adjust($primary-color, $lightness: 15%);
+    // Spin the icon
+    transform: rotate(360deg);
+    transition: transform 0.3s ease-in-out;
+  }
+}
+
+.content-container {
+  @include container;
+
+  margin-top: $spacing-lg;
+
+
+  p {
+    color: white;
+
+    a {
+      color: white;
+      border-bottom: 1px solid white;
+      &:hover {
+        border-bottom: 1px solid $primary-color;
+      }
+      &:active {
+        border-bottom: 1px solid color.adjust($primary-color, $lightness: 15%);
+      }
+    }
+  }
+  
+  
+}
+
+.note-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax($card-min-width, 1fr));
   gap: $grid-gap;
-  margin-top: $spacing-lg;
 }
 
-a {
-  @include link;
-}
 
 .button-primary {
   @include button-primary;

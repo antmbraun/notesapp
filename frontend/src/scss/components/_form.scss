@@ -1,13 +1,14 @@
+@use 'sass:color';
+
 @use '../utils/variables' as *;
 @use '../utils/mixins' as *;
+
 
 form {
   display: flex;
   flex-direction: column;
   gap: $spacing-md;
-  max-width: 600px;
   margin: 0 auto;
-  padding: $spacing-lg;
 
   input[type="text"],
   textarea {
@@ -29,19 +30,14 @@ form {
     resize: vertical;
   }
 
+  .back-button {
+    @include button-secondary;
+  }
+
   button[type="submit"] {
     @include button-primary;
     align-self: flex-start;
   }
 }
 
-.back-button {
-  @include button-primary;
-  margin-bottom: $spacing-lg;
-  background-color: $secondary-color;
-
-  &:hover {
-    background-color: darken($secondary-color, 10%);
-  }
-}
 

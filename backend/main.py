@@ -22,7 +22,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
 # Pydantic models
 class Note(BaseModel):
     title: str | None = None
@@ -65,7 +64,7 @@ async def read_root():
 
 
 @app.get("/notes")
-async def get_notes(description: str | None = None, top_k: int | None = 5):
+async def get_notes(description: str | None = None, top_k: int | None = None):
     """
     Returns a list of notes.
     If description is provided, returns notes sorted by similarity to the description using semantic similarity with a Hugging Face embedding model.

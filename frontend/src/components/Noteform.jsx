@@ -1,6 +1,8 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useNavigate, Link } from 'react-router-dom'
 
-function Noteform({ onSubmit, onCancel }) {
+function Noteform() {
+  const navigate = useNavigate()
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -28,16 +30,12 @@ function Noteform({ onSubmit, onCancel }) {
         throw new Error(errorData.detail || 'Failed to create note')
       }
 
-      const data = await response.json()
-      
       // Reset form
       setTitle('')
       setContent('')
       
-      // Notify parent component
-      if (onSubmit) {
-        onSubmit(data.note)
-      }
+      // Navigate back to home page
+      navigate('/')
     } catch (err) {
       setError(err.message)
     } finally {
@@ -45,11 +43,22 @@ function Noteform({ onSubmit, onCancel }) {
     }
   }
 
+  // On load give focus to title field
+  useEffect(() => {
+    const titleField = document.querySelector('input[type="text"]')
+    if (titleField) {
+      titleField.focus()
+    }
+  }, [])
+
   return (
-    <div>
-      <h1>Add a new note</h1>
+    <div className="content-container">
       {error && <div className="error-message">{error}</div>}
+
       <form onSubmit={handleSubmit}>
+        <Link to="/" className="back-button as-fe">
+            Cancel
+        </Link>
         <input 
           type="text" 
           placeholder="Title (optional)" 
@@ -63,15 +72,12 @@ function Noteform({ onSubmit, onCancel }) {
           onChange={(e) => setContent(e.target.value)}
           required
           disabled={isSubmitting}
+          style={{ height: '50vh' }}
         />
         <button type="submit" disabled={isSubmitting || !content.trim()}>
           {isSubmitting ? 'Adding...' : 'Add note'}
         </button>
-        {onCancel && (
-          <button type="button" onClick={onCancel} disabled={isSubmitting}>
-            Cancel
-          </button>
-        )}
+
       </form>
     </div>
   )
