@@ -103,6 +103,14 @@ async def create_note(note: Note):
     return {"message": "Note created", "note": note}
 
 
+@app.delete("/notes/{note_id}")
+async def delete_note(note_id: int):
+    """
+    Deletes a note by its ID.
+    """
+    notes.pop(note_id)
+    return {"message": "Note deleted"}
+
 @app.get("/health")
 async def health_check():
     return {"status": "healthy"}

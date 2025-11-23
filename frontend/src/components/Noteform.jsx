@@ -9,7 +9,34 @@ function Noteform() {
   const [error, setError] = useState(null)
 
   const handleSubmit = async (e) => {
+    const form = e.target
+    
+    // Check HTML5 validation before preventing default
+    // This allows browser to show validation messages properly
+    if (!form.checkValidity()) {
+      form.reportValidity()
+      e.preventDefault()
+      return
+    }
+    
     e.preventDefault()
+    
+    // Additional check for whitespace-only content
+    if (!content.trim()) {
+      const textarea = form.querySelector('textarea')
+      if (textarea) {
+        console.log('Content cannot be empty')
+        textarea.setCustomValidity('Content cannot be empty')
+        textarea.reportValidity()
+
+        textarea.oninput = () => {
+          textarea.setCustomValidity('')
+          textarea.reportValidity()
+        }
+      }
+      return
+    }
+    
     setError(null)
     setIsSubmitting(true)
 
@@ -67,6 +94,7 @@ function Noteform() {
           disabled={isSubmitting}
         />
         <textarea 
+          name="content"
           placeholder="Content" 
           value={content}
           onChange={(e) => setContent(e.target.value)}
@@ -74,7 +102,7 @@ function Noteform() {
           disabled={isSubmitting}
           style={{ height: '50vh' }}
         />
-        <button type="submit" disabled={isSubmitting || !content.trim()}>
+        <button type="submit" disabled={isSubmitting}>
           {isSubmitting ? 'Adding...' : 'Add note'}
         </button>
 

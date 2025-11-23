@@ -1,8 +1,9 @@
-import { useParams, Link, useLocation } from 'react-router-dom'
+import { useParams, Link, useLocation, useNavigate } from 'react-router-dom'
 
 function Note() {
   const { index } = useParams()
   const location = useLocation()
+  const navigate = useNavigate()
   const notes = location.state?.notes || []
   const noteIndex = parseInt(index, 10)
   const note = notes[noteIndex]
@@ -14,6 +15,24 @@ function Note() {
         <div>Note not found</div>
       </div>
     )
+  }
+
+  const deleteNote = async (noteIndex) => {
+    if (!confirm('Are you sure you want to delete this note?')) {  
+      return
+    }
+    try {
+      const response = await fetch(`/api/notes/${noteIndex}`, {
+        method: 'DELETE',
+      })
+      if (!response.ok) {
+        throw new Error('Failed to delete note')
+      }
+      navigate('/')
+    }
+    catch (error) {
+      console.error('Error deleting note:', error)
+    }
   }
 
   return (
@@ -39,6 +58,13 @@ function Note() {
             Created: {new Date(note.created_at).toLocaleString()}
           </small>
         )}
+
+        <button 
+          onClick={() => deleteNote(noteIndex)}
+          className="button-primary as-fe"
+        >
+          Delete
+        </button>
       </div>
     </div>
   )
