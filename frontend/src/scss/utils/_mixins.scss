@@ -20,15 +20,20 @@
   box-shadow: $shadow-sm;
 }
 
-@mixin button-primary {
-  background-color: $primary-color;
-  color: white;
+
+@mixin button {
   border: none;
   padding: $spacing-sm $spacing-md;
   border-radius: $border-radius-sm;
   cursor: pointer;
   font-size: $font-size-base;
   transition: background-color 0.2s;
+
+}
+
+@mixin button-primary {
+  background-color: $primary-color;
+  color: white;
 
   &:hover {
     background-color: color.adjust($primary-color, $lightness: -10%);
@@ -42,12 +47,6 @@
 @mixin button-secondary {
   background-color: $secondary-color;
   color: white;
-  border: none;
-  padding: $spacing-sm $spacing-md;
-  border-radius: $border-radius-sm;
-  cursor: pointer;
-  font-size: $font-size-base;
-  transition: background-color 0.2s;
 
   &:hover {
     background-color: color.adjust($secondary-color, $lightness: -10%);
@@ -55,6 +54,15 @@
 
   &:active {
     background-color: color.adjust($secondary-color, $lightness: -15%);
+  }
+}
+
+@mixin button-danger {
+  background-color: $danger-color;
+  color: white;
+
+  &:hover {
+    background-color: color.adjust($danger-color, $lightness: -10%);
   }
 }
 

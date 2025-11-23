@@ -83,7 +83,7 @@ function Noteform() {
       {error && <div className="error-message">{error}</div>}
 
       <form onSubmit={handleSubmit}>
-        <Link to="/" className="back-button as-fe">
+        <Link to="/" className="button button-secondary as-fe">
             Cancel
         </Link>
         <input 
@@ -102,7 +102,7 @@ function Noteform() {
           disabled={isSubmitting}
           style={{ height: '50vh' }}
         />
-        <button type="submit" disabled={isSubmitting}>
+        <button type="submit" disabled={isSubmitting} className="button button-primary">
           {isSubmitting ? 'Adding...' : 'Add note'}
         </button>
 

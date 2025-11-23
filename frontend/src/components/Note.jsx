@@ -61,7 +61,7 @@ function Note() {
 
         <button 
           onClick={() => deleteNote(noteIndex)}
-          className="button-primary as-fe"
+          className="button button-danger as-fe"
         >
           Delete
         </button>
