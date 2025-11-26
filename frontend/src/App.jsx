@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Routes, Route, Link, useNavigate } from 'react-router-dom'
+import { Routes, Route, Link } from 'react-router-dom'
 import './scss/main.scss'
 import Noteform from './components/Noteform'
 import Note from './components/Note'
@@ -35,12 +35,12 @@ function HomePage() {
     fetchNotes()
   }, [])
 
-  if (loading) return <div>Loading notes...</div>
-  if (error) return <div>Error: {error}</div>
 
   return (
     <div className="content-container">
-      <div className="note-grid">
+      {error && <div className="error-message">{error}</div>}
+      {loading && <div className="loading-message">Loading notes...</div>}
+      
       {notes.length === 0 ? (
         <p>
           No notes yet.{' '}
@@ -49,28 +49,29 @@ function HomePage() {
           </Link>
         </p>
       ) : (
-        notes.map((note, index) => (
-          <Link
-            to={`/notes/${index}`}
-            state={{ notes, noteIndex: index }}
-            key={index}
-            className="note-card"
-          >
-            {note.title && <h2>{note.title}</h2>}
-            {note.summary && (
-              <p className="summary">
-                {note.summary}
-              </p>
-            )}
-            {note.created_at && (
-              <small>
-                Created: {new Date(note.created_at).toLocaleString()}
-              </small>
-            )}
-          </Link>
-          ))
-        )}
-      </div>
+        <div className="note-grid">
+          {notes.map((note, index) => (
+            <Link
+              to={`/notes/${index}`}
+              state={{ notes, noteIndex: index }}
+              key={index}
+              className="note-card"
+            >
+              {note.title && <h2>{note.title}</h2>}
+              {note.summary && (
+                <p className="summary">
+                  {note.summary}
+                </p>
+              )}
+              {note.created_at && (
+                <small>
+                  Created: {new Date(note.created_at).toLocaleString()}
+                </small>
+              )}
+            </Link>
+          ))}
+        </div>
+      )}
     </div>
   )
 }

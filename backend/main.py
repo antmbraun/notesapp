@@ -1,5 +1,5 @@
 import os
-from datetime import datetime
+from datetime import datetime, timezone
 
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse
@@ -28,8 +28,8 @@ class Note(BaseModel):
     content: str
     summary: str | None = None
     description_embedding: list[float] | None = None
-    created_at: datetime = Field(default_factory=datetime.utcnow)  # pyright: ignore[reportDeprecated]
-    updated_at: datetime = Field(default_factory=datetime.utcnow)  # pyright: ignore[reportDeprecated]
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
 # class NoteCreate(NoteBase):

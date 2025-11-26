@@ -142,6 +142,10 @@ def test_live_get_notes_by_description():
     if os.getenv("HF_TOKEN") is None:
         raise ValueError("HF_TOKEN is not set")
 
+    # Clear notes before test
+    from main import notes
+    notes.clear()
+
     try:
         with open("test_strings_multiple.txt", "r", encoding="utf-8") as f:
             contents = f.read().strip()

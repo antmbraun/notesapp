@@ -1,3 +1,8 @@
+
+- Add 404 page
+- Add search bar
+- Add "related notes" to note component
+
 - Find diverse notes datasets to summarize
 - Implement automated classification of notes by topic (clustering or prompt based approaches)
 - Add endpoint to list and return notes by topic

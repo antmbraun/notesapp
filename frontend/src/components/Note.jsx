@@ -10,9 +10,8 @@ function Note() {
 
   if (!note) {
     return (
-      <div className="app">
-        <Link to="/" className="back-button">← Back to Notes</Link>
-        <div>Note not found</div>
+      <div className="app content-container paragraph">
+        <p>Note not found. <Link to="/" className="link">Back to Notes</Link></p>
       </div>
     )
   }

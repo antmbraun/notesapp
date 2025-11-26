@@ -1,5 +1,8 @@
 // Basic reset and base styles
 
+@use 'sass:color';
+@use '../utils/variables' as *;
+
 * {
   box-sizing: border-box;
 }
@@ -24,5 +27,20 @@ a {
 
   &:active {
     color: unset;
+  }
+}
+
+p, .paragraph {
+  color: white;
+
+  a {
+    color: white;
+    border-bottom: 1px solid white;
+    &:hover {
+      border-bottom: 1px solid $primary-color;
+    }
+    &:active {
+      border-bottom: 1px solid color.adjust($primary-color, $lightness: 15%);
+    }
   }
 }
