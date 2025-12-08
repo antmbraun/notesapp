@@ -1,0 +1,46 @@
+// Basic reset and base styles
+
+@use 'sass:color';
+@use '../utils/variables' as *;
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  color: white;
+}
+
+a {
+  text-decoration: none;
+  color: unset;
+
+  &:active {
+    color: unset;
+  }
+}
+
+p, .paragraph {
+  color: white;
+
+  a {
+    color: white;
+    border-bottom: 1px solid white;
+    &:hover {
+      border-bottom: 1px solid $primary-color;
+    }
+    &:active {
+      border-bottom: 1px solid color.adjust($primary-color, $lightness: 15%);
+    }
+  }
+}

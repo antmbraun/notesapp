@@ -1,0 +1,39 @@
+@use 'sass:color';
+
+@use '../utils/variables' as *;
+@use '../utils/mixins' as *;
+
+
+.note-form {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  margin: 0 auto;
+
+  input[type="text"],
+  textarea {
+    padding: $spacing-sm;
+    border: 1px solid $border-color;
+    border-radius: $border-radius-sm;
+    font-size: $font-size-base;
+    font-family: inherit;
+
+    &:focus {
+      outline: none;
+      border-color: $primary-color;
+      box-shadow: 0 0 0 2px rgba($primary-color, 0.2);
+    }
+  }
+
+  textarea {
+    min-height: 150px;
+    resize: vertical;
+  }
+
+  button[type="submit"] {
+    @include button-primary;
+    align-self: flex-start;
+  }
+}
+
+

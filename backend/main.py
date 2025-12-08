@@ -1,20 +1,26 @@
 import os
-from datetime import datetime
+from datetime import datetime, timezone
 
-from fastapi import FastAPI
-from fastapi.exceptions import HTTPException
+from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel, Field
 import uvicorn
 from huggingface_hub import InferenceClient
 from dotenv import load_dotenv
 from semantic_search import get_embedding, get_notes_by_description
-from datetime import datetime
+from fastapi.middleware.cors import CORSMiddleware
 
 load_dotenv()
 
 app = FastAPI(title="Notes App", description="A simple notes application with FastAPI")
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Pydantic models
 class Note(BaseModel):
@@ -22,8 +28,8 @@ class Note(BaseModel):
     content: str
     summary: str | None = None
     description_embedding: list[float] | None = None
-    created_at: datetime = Field(default_factory=datetime.utcnow)  # pyright: ignore[reportDeprecated]
-    updated_at: datetime = Field(default_factory=datetime.utcnow)  # pyright: ignore[reportDeprecated]
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
 # class NoteCreate(NoteBase):
@@ -58,7 +64,7 @@ async def read_root():
 
 
 @app.get("/notes")
-async def get_notes(description: str | None = None, top_k: int | None = 5):
+async def get_notes(description: str | None = None, top_k: int | None = None):
     """
     Returns a list of notes.
     If description is provided, returns notes sorted by similarity to the description using semantic similarity with a Hugging Face embedding model.
@@ -96,6 +102,14 @@ async def create_note(note: Note):
 
     return {"message": "Note created", "note": note}
 
+
+@app.delete("/notes/{note_id}")
+async def delete_note(note_id: int):
+    """
+    Deletes a note by its ID.
+    """
+    notes.pop(note_id)
+    return {"message": "Note deleted"}
 
 @app.get("/health")
 async def health_check():

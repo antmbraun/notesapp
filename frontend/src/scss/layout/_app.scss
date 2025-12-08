@@ -1,0 +1,39 @@
+@use 'sass:color';
+
+@use '../utils/variables' as *;
+@use '../utils/mixins' as *;
+
+html, body {
+  background-color: black;
+  height: 100%;
+}
+
+
+.content-container {
+  @include container;
+
+  margin-top: $spacing-lg;
+  
+}
+
+.note-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax($card-min-width, 1fr));
+  gap: $grid-gap;
+}
+
+.button {
+  @include button;
+}
+
+.button-primary {
+  @include button-primary;
+}
+
+.button-secondary {
+  @include button-secondary;
+}
+
+.button-danger {
+  @include button-danger;
+}

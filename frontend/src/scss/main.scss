@@ -1,0 +1,13 @@
+// Main SCSS file - imports all other stylesheets
+// Using @use instead of @import (modern Sass syntax)
+
+@use 'utils/variables';
+@use 'utils/mixins';
+@use 'base/reset';
+@use 'utils/atomic';
+@use 'layout/app';
+@use 'components/note-card';
+@use 'components/note-form';
+@use 'components/note';
+@use 'components/header';
+

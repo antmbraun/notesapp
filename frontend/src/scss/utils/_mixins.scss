@@ -1,0 +1,77 @@
+// Mixins for common patterns
+
+@use 'sass:color';
+
+@use 'variables' as *;
+
+
+@mixin container {
+  max-width: $content-max-width;
+  margin: 0 auto;
+  padding: $spacing-lg;
+}
+
+
+@mixin card {
+  border: 1px solid $border-color;
+  border-radius: $border-radius;
+  padding: $spacing-md;
+  background: $bg-primary;
+  box-shadow: $shadow-sm;
+}
+
+
+@mixin button {
+  border: none;
+  padding: $spacing-sm $spacing-md;
+  border-radius: $border-radius-sm;
+  cursor: pointer;
+  font-size: $font-size-base;
+  transition: background-color 0.2s;
+
+}
+
+@mixin button-primary {
+  background-color: $primary-color;
+  color: white;
+
+  &:hover {
+    background-color: color.adjust($primary-color, $lightness: -10%);
+  }
+
+  &:active {
+    background-color: color.adjust($primary-color, $lightness: -15%);
+  }
+}
+
+@mixin button-secondary {
+  background-color: $secondary-color;
+  color: white;
+
+  &:hover {
+    background-color: color.adjust($secondary-color, $lightness: -10%);
+  }
+
+  &:active {
+    background-color: color.adjust($secondary-color, $lightness: -15%);
+  }
+}
+
+@mixin button-danger {
+  background-color: $danger-color;
+  color: white;
+
+  &:hover {
+    background-color: color.adjust($danger-color, $lightness: -10%);
+  }
+}
+
+@mixin link {
+  color: $primary-color;
+  text-decoration: underline;
+  cursor: pointer;
+
+  &:hover {
+    color: color.adjust($primary-color, $lightness: -10%);
+  }
+}
