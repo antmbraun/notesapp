@@ -83,9 +83,9 @@ function Noteform() {
       {error && <div className="error-message">{error}</div>}
 
       <form className="note-form" onSubmit={handleSubmit}>
-        <Link to="/" className="button button-secondary as-fe">
+        <button onClick={() => navigate('/')} className="button button-secondary as-fe">
             Cancel
-        </Link>
+        </button>
         <input 
           type="text" 
           placeholder="Title (optional)" 

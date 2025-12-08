@@ -4,6 +4,7 @@ import './scss/main.scss'
 import Noteform from './components/Noteform'
 import Note from './components/Note'
 import Header from './components/Header'
+import NotFound from './components/NotFound'
 
 const API_URL = import.meta.env.DEV ? '/api' : 'http://localhost:8000'
 
@@ -28,7 +29,6 @@ function HomePage() {
       setLoading(false)
     }
   }
-
 
   useEffect(() => {
     fetchNotes()
@@ -87,6 +87,7 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/add" element={<Noteform />} />
         <Route path="/notes/:index" element={<Note />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </div>
   )
