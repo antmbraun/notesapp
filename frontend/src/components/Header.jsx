@@ -12,11 +12,9 @@ function Header() {
         <h1>Notes App</h1>
       </Link>
       <Searchbar />
-      {!isAddPage && (
-        <Link to="/add" className="add-icon-link">
-          <FaPlus className="add-icon" />
-        </Link>
-      )}
+      <Link to="/add" className={`add-icon-link ${isAddPage ? 'hidden' : ''}`}>
+        <FaPlus className="add-icon" />
+      </Link>
     </header>
   )
 }

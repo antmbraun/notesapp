@@ -16,6 +16,7 @@
   top: 0;
   background: black;
   min-height: 100px;
+  transition: all 0.5s ease-in-out;
 }
 
 .header-title {
@@ -23,7 +24,10 @@
 }
 
 
-.searchbar input {
+.searchbar {
+  transition: margin-right 0.5s ease-in-out;
+  
+  input {
     height: 40px;
     width: 100%;
     background: white;
@@ -38,6 +42,23 @@
       border-color: $primary-color;
       box-shadow: 0 0 0 2px rgba($primary-color, 0.2);
     }
+  }
+}
+
+.add-icon-link {
+  display: flex;
+  align-items: center;
+  transition: width 0.3s ease-in-out, opacity 0.3s ease-in-out, margin 0.3s ease-in-out;
+  overflow: hidden;
+  width: 64px;
+  opacity: 1;
+  
+  &.hidden {
+    width: 0;
+    opacity: 0;
+    margin: 0;
+    pointer-events: none;
+  }
 }
 
 .add-icon {
@@ -47,6 +68,7 @@
   padding: 10px;
   box-sizing: content-box;
   border-radius: 100%;
+  flex-shrink: 0;
 
   &:hover {
     background: color.adjust($primary-color, $lightness: 10%);
@@ -54,7 +76,7 @@
   &:active {
     background: color.adjust($primary-color, $lightness: 15%);
     // Spin the icon
-    transform: rotate(360deg);
-    transition: transform 0.3s ease-in-out;
+    // transform: rotate(360deg);
+    // transition: transform 0.3s ease-in-out;
   }
 }

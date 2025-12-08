@@ -3,12 +3,23 @@
 @use '../utils/variables' as *;
 @use '../utils/mixins' as *;
 
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
 .note-form {
   display: flex;
   flex-direction: column;
   gap: $spacing-md;
   margin: 0 auto;
+  animation: fadeIn 0.5s ease-in-out;
 
   input[type="text"],
   textarea {
