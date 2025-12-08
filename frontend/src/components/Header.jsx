@@ -1,5 +1,6 @@
 import { Link, useLocation } from 'react-router-dom'
 import { FaPlus } from 'react-icons/fa'
+import Searchbar from './Searchbar'
 
 function Header() {
   const location = useLocation()
@@ -10,8 +11,9 @@ function Header() {
       <Link to="/" className="header-title">
         <h1>Notes App</h1>
       </Link>
+      <Searchbar />
       {!isAddPage && (
-        <Link to="/add">
+        <Link to="/add" className="add-icon-link">
           <FaPlus className="add-icon" />
         </Link>
       )}

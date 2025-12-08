@@ -9,38 +9,6 @@ html, body {
 }
 
 
-.header {
-  max-width: $header-max-width;
-  margin: 0 auto;
-  padding: $spacing-lg;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  position: sticky;
-  top: 0;
-  background: black;
-  min-height: 100px;
-}
-
-.add-icon {
-  width: 32px;
-  height: 32px;
-  background: white;
-  padding: 10px;
-  box-sizing: content-box;
-  border-radius: 100%;
-
-  &:hover {
-    background: color.adjust($primary-color, $lightness: 10%);
-  }
-  &:active {
-    background: color.adjust($primary-color, $lightness: 15%);
-    // Spin the icon
-    transform: rotate(360deg);
-    transition: transform 0.3s ease-in-out;
-  }
-}
-
 .content-container {
   @include container;
 

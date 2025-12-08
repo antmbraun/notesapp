@@ -72,7 +72,7 @@ function Noteform() {
 
   // On load give focus to title field
   useEffect(() => {
-    const titleField = document.querySelector('input[type="text"]')
+    const titleField = document.querySelector('.note-form input[type="text"]')
     if (titleField) {
       titleField.focus()
     }
@@ -82,7 +82,7 @@ function Noteform() {
     <div className="content-container">
       {error && <div className="error-message">{error}</div>}
 
-      <form onSubmit={handleSubmit}>
+      <form className="note-form" onSubmit={handleSubmit}>
         <Link to="/" className="button button-secondary as-fe">
             Cancel
         </Link>

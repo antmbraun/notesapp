@@ -7,6 +7,7 @@
 @use 'utils/atomic';
 @use 'layout/app';
 @use 'components/note-card';
-@use 'components/form';
+@use 'components/note-form';
 @use 'components/note';
+@use 'components/header';
 

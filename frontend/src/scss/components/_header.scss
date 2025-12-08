@@ -1,0 +1,60 @@
+@use 'sass:color';
+
+@use '../utils/variables' as *;
+@use '../utils/mixins' as *;
+
+
+.header {
+  max-width: $header-max-width;
+  margin: 0 auto;
+  padding: $spacing-lg;
+  display: flex;
+  justify-content: flex-end;
+  gap: $spacing-lg;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  background: black;
+  min-height: 100px;
+}
+
+.header-title {
+  margin-right: auto;
+}
+
+
+.searchbar input {
+    height: 40px;
+    width: 100%;
+    background: white;
+    padding: 10px;
+    border-radius: $border-radius-sm;
+    border: 1px solid $border-color;
+    font-size: $font-size-base;
+    font-family: inherit;
+
+    &:focus {
+      outline: none;
+      border-color: $primary-color;
+      box-shadow: 0 0 0 2px rgba($primary-color, 0.2);
+    }
+}
+
+.add-icon {
+  width: 32px;
+  height: 32px;
+  background: white;
+  padding: 10px;
+  box-sizing: content-box;
+  border-radius: 100%;
+
+  &:hover {
+    background: color.adjust($primary-color, $lightness: 10%);
+  }
+  &:active {
+    background: color.adjust($primary-color, $lightness: 15%);
+    // Spin the icon
+    transform: rotate(360deg);
+    transition: transform 0.3s ease-in-out;
+  }
+}

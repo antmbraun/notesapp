@@ -3,6 +3,8 @@
 - Add search bar
 - Add "related notes" to note component
 
+- Find some sort of low cost vector database to store data (locally or in cloud?)
+
 - Find diverse notes datasets to summarize
 - Implement automated classification of notes by topic (clustering or prompt based approaches)
 - Add endpoint to list and return notes by topic

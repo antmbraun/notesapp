@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Routes, Route, Link } from 'react-router-dom'
+import { Routes, Route, Link} from 'react-router-dom'
 import './scss/main.scss'
 import Noteform from './components/Noteform'
 import Note from './components/Note'
@@ -17,7 +17,7 @@ function HomePage() {
       setLoading(true)
       const response = await fetch(`${API_URL}/notes`)
       if (!response.ok) {
-        throw new Error('Failed to fetch notes')
+        throw new Error('Failed to fetch notes. Are you sure the API is running?')
       }
       const data = await response.json()
       setNotes(data)
@@ -29,18 +29,21 @@ function HomePage() {
     }
   }
 
-  console.log(notes)
 
   useEffect(() => {
     fetchNotes()
   }, [])
 
+  if (loading) {
+    return <div className="content-container"><p className="">Loading notes...</p></div>
+  }
+  if (error) {
+    return <div className="content-container"><p className="">{error}</p></div>  
+  }
+
 
   return (
     <div className="content-container">
-      {error && <div className="error-message">{error}</div>}
-      {loading && <div className="loading-message">Loading notes...</div>}
-      
       {notes.length === 0 ? (
         <p>
           No notes yet.{' '}

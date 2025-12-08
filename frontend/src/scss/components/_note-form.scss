@@ -4,7 +4,7 @@
 @use '../utils/mixins' as *;
 
 
-form {
+.note-form {
   display: flex;
   flex-direction: column;
   gap: $spacing-md;
