@@ -17,7 +17,7 @@ function Note() {
   }
 
   const deleteNote = async (noteIndex) => {
-    if (!confirm('Are you sure you want to delete this note?')) {  
+    if (!confirm('Are you sure you want to delete this note?')) {
       return
     }
     try {
@@ -32,6 +32,10 @@ function Note() {
     catch (error) {
       console.error('Error deleting note:', error)
     }
+  }
+
+  const editNote = async (noteIndex) => {
+    navigate(`/edit/${noteIndex}`)
   }
 
   return (
@@ -57,13 +61,20 @@ function Note() {
             Created: {new Date(note.created_at).toLocaleString()}
           </small>
         )}
-
-        <button 
-          onClick={() => deleteNote(noteIndex)}
-          className="button button-danger as-fe"
-        >
-          Delete
-        </button>
+        <span className="button-group as-fe">
+          <button
+            onClick={() => editNote(noteIndex)}
+            className="button button-primary"
+          >
+            Edit
+          </button>
+          <button
+            onClick={() => deleteNote(noteIndex)}
+            className="button button-danger"
+          >
+            Delete
+          </button>
+        </span>
       </div>
     </div>
   )

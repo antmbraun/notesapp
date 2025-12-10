@@ -22,6 +22,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 # Pydantic models
 class Note(BaseModel):
     title: str | None = None
@@ -103,6 +104,19 @@ async def create_note(note: Note):
     return {"message": "Note created", "note": note}
 
 
+@app.put("/notes/{note_id}")
+async def update_note(note_id: int, note: Note):
+    """
+    Updates a note by its ID.
+    """
+    
+    # Update the note summary.
+    summarize(note)
+    note.updated_at = datetime.now(timezone.utc)
+    notes[note_id] = note
+    return {"message": "Note updated", "note": note}
+
+
 @app.delete("/notes/{note_id}")
 async def delete_note(note_id: int):
     """
@@ -110,6 +124,7 @@ async def delete_note(note_id: int):
     """
     notes.pop(note_id)
     return {"message": "Note deleted"}
+
 
 @app.get("/health")
 async def health_check():
@@ -136,7 +151,7 @@ def summarize(req: Note):
             messages=[
                 {
                     "role": "user",
-                    "content": f"{req.content}\n\nPlease summarize the above text in 50 words or less.",
+                    "content": f"{req.content}\n\nProvide a very brief summary of the above text. If the text is too short or is nonsensical, return 'No summary available'.",
                 }
             ],
         )

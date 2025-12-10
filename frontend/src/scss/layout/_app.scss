@@ -37,3 +37,8 @@ html, body {
 .button-danger {
   @include button-danger;
 }
+
+.button-group {
+  display: flex;
+  gap: $spacing-lg;
+}

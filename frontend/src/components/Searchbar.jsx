@@ -9,9 +9,14 @@ function Searchbar() {
   }
 
   return (
-    <form className="searchbar" onSubmit={handleSubmit}>
-      <input type="text" placeholder="Search" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
-    </form>
+    <>
+      <form className="searchbar" onSubmit={handleSubmit}>
+        <input type="text" placeholder="Search" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
+      </form>
+      <div className="searchbar-results">
+
+      </div>
+    </>
   )
 }
 
